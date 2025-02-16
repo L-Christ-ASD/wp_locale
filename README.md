@@ -178,10 +178,11 @@ Connecté au réseau wp-network.
 
 ![Test de création de pages et d'ajout de médias dans Mon site](monsite.png)  
 
-#### 3.4. Résumé du Fonctionnement  
-**MySQL (db)** démarre et crée une base de données wordpress.  
-**WordPress** qui permet de créer un site web, démarre et se connecte à la base de données MySQL via db. Accessible sur http://localhost:8082  
-**PhpMyAdmin** démarre et permet d’accéder à la base de données via http://localhost:8081.  
+#### 3.4. Résumé du Fonctionnement
+
+* **MySQL (db)** démarre et crée une base de données wordpress.  
+* **WordPress** qui permet de créer un site web, démarre et se connecte à la base de données MySQL via db. Accessible sur http://localhost:8082  
+* **PhpMyAdmin** démarre et permet d’accéder à la base de données via http://localhost:8081.  
 
 ## 4. Difficultés Rencontrées et Solutions
 
