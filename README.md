@@ -88,15 +88,16 @@ networks:
 
 * Lancement de l'environnement avec :
 
-    ```bash
-    docker compose up -d
-    ```
+```bash
+ docker compose up -d
+```
 
 * Lister les contenneurs en cours d'execution:
 
-    ```bash
-    docker ps
-    ```
+```bash
+ docker ps
+```
+
 ![Mes contenneurs](PS.jpg)
 
 ## 3. Choix de Configuration
@@ -105,24 +106,31 @@ networks:
 
 Ce service exécute un conteneur WordPress avec les paramètres suivants :
 
-* **Image utilisée :** wordpress:latest (dernière version officielle de WordPress).
-* **Nom du conteneur :** wordpress.
-* Redémarrage automatique (**restart: always**) --> le conteneur sera relancé en cas de crash.
-* **Port exposé :** 8082:80 --> Accès à l'interface via http://localhost:8082.
+* **Image utilisée :** wordpress:latest (dernière version officielle de WordPress).  
+
+* **Nom du conteneur :** wordpress.  
+
+* **restart: always** (Redémarrage automatique) --> le conteneur sera relancé en cas de crash.  
+
+* **Port exposé :** 8082:80 --> Accès à l'interface via http://localhost:8082.  
+
 * **Variables d'environnement :**
   - WORDPRESS_DB_HOST: db → Indique que la base de données est hébergée par le service db.
   - WORDPRESS_DB_USER: wordpress → Nom d'utilisateur pour la base de données.
   - WORDPRESS_DB_PASSWORD: wordpress → Mot de passe pour la base de données.
-  - WORDPRESS_DB_NAME: wordpress → Nom de la base de données WordPress.
-* **Volume monté :**
-  - wordpress_data:/var/www/html → Permet de sauvegarder les fichiers WordPress en dehors du conteneur pour une persistance des données.
-* **Dépendance :**
-  - depends_on: db → WordPress ne démarrera qu’après le démarrage de la base de données MySQL.
-* **Réseau :**
-  - Connecté au réseau wp-network.
+  - WORDPRESS_DB_NAME: wordpress → Nom de la base de données WordPress.  
 
+* **Volume monté :**
+  - wordpress_data:/var/www/html → Permet de sauvegarder les fichiers WordPress en dehors du conteneur pour une persistance des données.  
+
+* **Dépendance :**
+  - depends_on: db → WordPress ne démarrera qu’après le démarrage de la base de données MySQL.  
+
+* **Réseau :**
+  - Connecté au réseau wp-network.  
+  
 * **Configuration du site et création du compte administrateur.**  
-Acceder à l'interface WordPress:
+  - Acceder à l'interface WordPress:
   * Choix de la langue --> suivre les étapes
 
 **Résultat:**  
@@ -134,7 +142,7 @@ Acceder à l'interface WordPress:
 
 
 
-![Mon site](monsite.png)
+![Mon site](monsite.png)  
 
 ### 3.2. Configuration de MySQL(db)
 
@@ -167,7 +175,7 @@ Redémarrage automatique : restart: always.
 * **Dépendance :**
   - depends_on: db → PhpMyAdmin ne démarre qu’après la base de données.
 * **Réseau :**
-Connecté au réseau wp-network.
+Connecté au réseau wp-network.  
 
 
 
@@ -175,7 +183,7 @@ Connecté au réseau wp-network.
 
 * En utilisant un réseau bridge, les conteneurs peuvent communiquer entre eux via leurs noms de service (db, wordpress, phpmyadmin) sans exposer leurs ports à tout le réseau de l'hôte.
 
-#### 3.4. Résumé du Fonctionnement
+#### 3.4. Résumé du Fonctionnement  
 
 **MySQL (db)** démarre et crée une base de données wordpress.  
 **WordPress** qui permet de créer un site web, démarre et se connecte à la base de données MySQL via db. Accessible sur http://localhost:8082  
