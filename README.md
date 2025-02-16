@@ -1,6 +1,6 @@
 # Déploiement - WordPress avec Docker
 
-#### 🔧 Prérequis
+#### Prérequis
 
 **Logiciels** : Docker et Docker Compose installés sur votre machine.
 
@@ -99,7 +99,7 @@ docker compose up -d
 ```bash
 docker ps
 ```
-![Mes contenneurs](PS.png)
+![Mes contenneurs](PS.jpg)
 
 ## 2.4 Choix de Configuration
 
