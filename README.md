@@ -106,7 +106,7 @@ networks:
 
 Ce service exécute un conteneur WordPress avec les paramètres suivants :
 
-* **Image utilisée :** wordpress:latest (dernière version officielle de WordPress).  
+* **Image utilisée :** wordpress:6.7 (une version stable de WordPress "Rollins").  
 
 * **Nom du conteneur :** wordpress.  
 
@@ -214,7 +214,7 @@ Ce déploiement permet une mise en place rapide et efficace d'un environnement c
 
 * Utiliser Redis pour activer la mise en cache de WordPress (améliorer les performances).
 
-* spécifier une version stable Plutôt que *latest* qui peut causer des incompatibilités.
+
 
 
 
