@@ -1,15 +1,13 @@
 # Déploiement - WordPress avec Docker
 
-#### Prérequis
+#### Prérequis  
 
-**Logiciels** : Docker et Docker Compose installés sur votre machine.
+* *Logiciels* : Docker et Docker Compose installés sur votre machine.
 
-**Connaissances** : Notions de base sur Docker, la gestion des volumes et des réseaux.
+* *Connaissances* : Notions de base sur Docker, la gestion des volumes et des réseaux.
 
-**Matériel** : Terminal, éditeur de texte et navigateur web.
+* *Matériel* : Terminal, éditeur de texte et navigateur web.
 
-
-### Mise en pratique
 
 ## 1. Introduction
 
@@ -27,7 +25,7 @@ Pour commencer, il est essentiel de definir un espace de travail, un dossier ded
 
 ### 2.2. Rédaction du fichier docker-compose.yml
 
-* Un fichier **docker-compose.yml** a été créé avec la configuration suivante :
+* Un fichier **docker-compose.yml** a été créé dans "tp-wordpress", avec la configuration suivante :
 
 ``` yml
 services:
@@ -89,21 +87,21 @@ networks:
 ### 2.3. Démarrage des conteneurs
 
 * Lancement de l'environnement avec :
-```bash
-docker compose up -d
 
-```
+    ```bash
+    docker compose up -d
+    ```
 
-* Lister les contenneurs en cours d'execution
+* Lister les contenneurs en cours d'execution:
 
-```bash
-docker ps
-```
+    ```bash
+    docker ps
+    ```
 ![Mes contenneurs](PS.jpg)
 
-## 2.4 Choix de Configuration
+## 3. Choix de Configuration
 
-### 2.4.1 Configuration de WordPress
+### 3.1. Configuration de WordPress
 
 Ce service exécute un conteneur WordPress avec les paramètres suivants :
 
@@ -127,7 +125,8 @@ Ce service exécute un conteneur WordPress avec les paramètres suivants :
 Acceder à l'interface WordPress:
   * Choix de la langue --> suivre les étapes
 
-**Résultat:**
+**Résultat:**  
+
 ![interface admin ](wpAdmin.png)  
 
 
@@ -137,7 +136,7 @@ Acceder à l'interface WordPress:
 
 ![Mon site](monsite.png)
 
-### 2.4.2 Configuration de MySQL(db)
+### 3.2. Configuration de MySQL(db)
 
 Ce service exécute un conteneur MySQL 8.0, qui sert de base de données pour WordPress.
 
@@ -154,7 +153,7 @@ Ce service exécute un conteneur MySQL 8.0, qui sert de base de données pour Wo
 * **Réseau :**
 Connecté au réseau wp-network.
 
-### 2.4.3 Configuration de phpmyadmin *(Interface Graphique)*
+### 3.3. Configuration de phpmyadmin *(Interface Graphique)*
 
 Ce service installe PhpMyAdmin, une interface web pour gérer la base de données MySQL.
 
@@ -172,11 +171,11 @@ Connecté au réseau wp-network.
 
 
 
---> ***IDéfinition du Réseau***
+***Définition du Réseau***
 
 * En utilisant un réseau bridge, les conteneurs peuvent communiquer entre eux via leurs noms de service (db, wordpress, phpmyadmin) sans exposer leurs ports à tout le réseau de l'hôte.
 
-#### Résumé du Fonctionnement
+#### 3.4. Résumé du Fonctionnement
 
 **MySQL (db)** démarre et crée une base de données wordpress.  
 **WordPress** qui permet de créer un site web, démarre et se connecte à la base de données MySQL via db. Accessible sur http://localhost:8082  
@@ -185,9 +184,9 @@ Connecté au réseau wp-network.
 
 ## 4. Difficultés Rencontrées et Solutions
 
-| **Problèmes**  | **Cause**  | **Solution**|
+| **Problème**  | **Cause**  | **Solution**|
 |-----------|-----------|-----------|
-| DErreur : Port 8080 déjà utilisé | Un autre service occupait ce port | Changer le port WordPress 8080:80 en 8081:80 dans docker-compose.yml  |
+| Erreur : Port 8080 déjà utilisé | Un autre service occupait ce port | Changer le port WordPress 8080:80 en 8081:80 dans docker-compose.yml  |
 |  |  |  |
 | Problème de connexion entre WordPress et MySQL  | Mauvaise configuration des variables d'environnement  | Vérification des valeurs et redémarrage des conteneurs  |
 |  |   |  |
@@ -199,7 +198,7 @@ Connecté au réseau wp-network.
 
 Ce déploiement permet une mise en place rapide et efficace d'un environnement complet pour héberger WordPress avec une base de données MySQL et une interface d'administration PhpMyAdmin, dans un environnement conteneurisé.
 
-***Perspectives d'améliorations possibles***
+## Perspectives d'améliorations possibles
 
 * Sécurisation en utilisant des mots de passe plus robustes et des fichiers .env.
 
