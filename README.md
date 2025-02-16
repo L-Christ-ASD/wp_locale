@@ -129,17 +129,6 @@ Ce service exécute un conteneur WordPress avec les paramètres suivants :
 * **Réseau :**
   - Connecté au réseau wp-network.  
   
-* **Configuration du site et création du compte administrateur.**  
-  - Acceder à l'interface WordPress:
-  * Choix de la langue --> suivre les étapes
-
-**Résultat:**  
-
-![interface admin ](wpAdmin.png)  
-
-![Test de création de pages et d'ajout de médias dans Mon site](monsite.png)  
-
-
 ### 3.2. Configuration de MySQL(db)
 
 Ce service exécute un conteneur MySQL 8.0, qui sert de base de données pour WordPress.
@@ -177,14 +166,23 @@ Connecté au réseau wp-network.
 
 ***Définition du Réseau***
 
-* En utilisant un réseau bridge, les conteneurs peuvent communiquer entre eux via leurs noms de service (db, wordpress, phpmyadmin) sans exposer leurs ports à tout le réseau de l'hôte.
+* En utilisant un réseau bridge, les conteneurs peuvent communiquer entre eux via leurs noms de service (db, wordpress, phpmyadmin) sans exposer leurs ports à tout le réseau de l'hôte.  
+
+* **Configuration du site**  
+  - Acceder à l'interface WordPress via localhost:
+  * Choix de la langue --> suivre les étapes  
+
+**Résultat:**  
+
+![interface admin ](wpAdmin.png)  
+
+![Test de création de pages et d'ajout de médias dans Mon site](monsite.png)  
 
 #### 3.4. Résumé du Fonctionnement  
 
 **MySQL (db)** démarre et crée une base de données wordpress.  
 **WordPress** qui permet de créer un site web, démarre et se connecte à la base de données MySQL via db. Accessible sur http://localhost:8082  
-**PhpMyAdmin** démarre et permet d’accéder à la base de données via http://localhost:8081.
-
+**PhpMyAdmin** démarre et permet d’accéder à la base de données via http://localhost:8081.  
 
 ## 4. Difficultés Rencontrées et Solutions
 
