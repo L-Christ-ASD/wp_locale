@@ -137,12 +137,8 @@ Ce service exécute un conteneur WordPress avec les paramètres suivants :
 
 ![interface admin ](wpAdmin.png)  
 
+![Test de création de pages et d'ajout de médias dans Mon site](monsite.png)  
 
-* **Test de création de pages et d'ajout de médias.**  
-
-
-
-![Mon site](monsite.png)  
 
 ### 3.2. Configuration de MySQL(db)
 
