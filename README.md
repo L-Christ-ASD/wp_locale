@@ -420,9 +420,13 @@ Explication des étapes du workflow :
 |  |  |  |
 | Resource not accessible by integration  |  l'upload du fichier SARIF échoue à cause d'un problème d'autorisations  | Ajout des permissions nécessaires dans le workflow, dans la section jobs.scan |
 |  |   |  |
-| Base de données non persistante après redémarrag  | Typo dans la configuration de volume pour MySQL  | Correction de typo /var/libn/mysql --> volume db_data:/var/lib/mysql |
+| Warning: Code scanning is not enabled for this repository.| rle repo sur lequel je travail est privé  | Mettre le repo en public et Activer Code Scanning dans github: l’onglet Security, section Code Scanning, cliquez sur Set up code scanning |
 
 
+
+**NB:**  
+- Code Scanning est désactivé par defaut sur le dépôt publique. Comme GitHub Advanced Security (qui inclut Code Scanning) est une fonctionnalité premium pour les organisations, il n’est donc pas disponible pour les dépôts privés des utilisateurs individuels.  
+Il suffit de decommenter les lignes (à partir de la ligne 53) "#- name: Upload Trivy Config Scan Results" si besoin.
 
 
 
