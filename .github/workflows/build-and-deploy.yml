@@ -22,9 +22,9 @@ jobs:
         run: |
           docker compose down -v || true
 
-      - name: Remove Old images
+      - name: Remove Old images 
         run: |
-          docker image prune -a || true
+          docker image prune -a --y || true
 
       - name: Remove Old Container
         run: |
