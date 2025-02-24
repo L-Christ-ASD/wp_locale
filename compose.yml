@@ -15,7 +15,7 @@ services:
       - --certificatesresolvers.myresolver.acme.tlschallenge=true
       - --certificatesresolvers.myresolver.acme.email=christ.lumu@oclock.school
       - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
-      - --providers.docker.defaultRule=Host(`{{ reverse-proxy }}.l-christ-asd-server.eddi.cloud`) # utilise le nom du service défini dans docker-compose.yml comme sous-domaine.
+      - --providers.docker.defaultRule=Host(`*.l-christ-asd-server.eddi.cloud`) # utilise le nom du service défini dans docker-compose.yml comme sous-domaine.
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock # Permet à Traefik d'accéder aux informations des conteneurs Docker
       - ./letsencrypt:/letsencrypt
