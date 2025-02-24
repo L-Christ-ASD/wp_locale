@@ -43,4 +43,8 @@ jobs:
           docker compose up -d || true
 
       - name: Check new containeur
-        run: docker ps -a || true
+        run: |
+          docker ps -a || true
+          ls -l ./letsencrypt || true
+          ls /home/student/actions-runner-wpress/_work/wordPress/wordPress/letsencrypt/acme.json
+
