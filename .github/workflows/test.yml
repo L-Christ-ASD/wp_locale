@@ -50,16 +50,16 @@
               name: trivy-config-report
               path: config-scan-results-${{ github.sha }}.sarif
 
-          - name: Upload Trivy Config Scan Results        #Activer l’annotation automatique dans GitHub pour les résultats SARIF          
-            uses: github/codeql-action/upload-sarif@v3   # Mise à jour vers v3
-            with:
-              sarif_file: config-scan-results-${{ github.sha }}.sarif
-              token: ${{ secrets.GITHUB_TOKEN }}  # Ajout du token   
+          #- name: Upload Trivy Config Scan Results        #Activer l’annotation automatique dans GitHub pour les résultats SARIF          
+          #  uses: github/codeql-action/upload-sarif@v3   # Mise à jour vers v3
+          #  with:
+          #    sarif_file: config-scan-results-${{ github.sha }}.sarif
+          #    token: ${{ secrets.GITHUB_TOKEN }}  # Ajout du token   
 
-        permissions:
-          security-events: write  # Permet d'envoyer les rapports SARIF à GitHub
-          actions: read
-          contents: read
+        #permissions:
+        #  security-events: write  # Permet d'envoyer les rapports SARIF à GitHub
+        #  actions: read
+        #  contents: read
 
         
 
