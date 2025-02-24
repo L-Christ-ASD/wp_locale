@@ -24,4 +24,4 @@ jobs:
           docker rm wp_project || true
 
       - name: Run New Container
-        run: docker run -d --name wp_project wp_project:${{ github.sha }}
+        run: docker compose up -d --name wp_project wp_project:${{ github.sha }}
