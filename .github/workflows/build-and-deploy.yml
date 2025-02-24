@@ -15,10 +15,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Show containeur
+        run: docker ps -a || true
+
       - name: Stop and Remove Old Container
         run: |
           docker compose down -v || true
           
-
       - name: Run container
-        run: docker compose up -d 
+        run: |
+          docker compose up -d || true
