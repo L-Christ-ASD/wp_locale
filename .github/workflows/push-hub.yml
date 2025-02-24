@@ -10,7 +10,7 @@ on :
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: christasd/notrevache
+  IMAGE_NAME: christasd/wordPress
 
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: |
+          #images: |
             "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
           tags: |
 
@@ -50,12 +50,10 @@ jobs:
         with:
           context: .
           push: true
-          tags: |
-
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}    
+          tags: |   
             ${{ steps.meta.outputs.tags }}
-          
-            labels: "${{ steps.meta.outputs.labels }}"
+    
+          labels: "${{ steps.meta.outputs.labels }}"
 
 
 
