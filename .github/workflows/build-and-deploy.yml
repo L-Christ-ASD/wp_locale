@@ -1,0 +1,27 @@
+---
+name: Build and Deploy (Self-Hosted)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build and Deploy on Self-Hosted Runner
+    runs-on: self-hosted  # Utilise un runner auto-hébergé
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: docker build -t wp_project:${{ github.sha }} .
+
+      - name: Stop and Remove Old Container
+        run: |
+          docker stop wp_project || true
+          docker rm wp_project || true
+
+      - name: Run New Container
+        run: docker run -d --name wp_project wp_project:${{ github.sha }}
