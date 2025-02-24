@@ -3,8 +3,7 @@ name: Build and Deploy (Self-Hosted)
 
 on:
   push:
-    branches:
-      - main
+  
 
 jobs:
   deploy:
@@ -24,9 +23,16 @@ jobs:
 
       - name: Remove Old Container
         run: |      
-          sudo docker stop f690f3ce6edc 1a2eee80c11f 5163effec2da 317436bbf86a d7d172b4a971 384c776e1d99 
-          sudo docker rm f690f3ce6edc 1a2eee80c11f 5163effec2da 317436bbf86a d7d172b4a971 384c776e1d99
-          sudo docker container prune -f || true 
+          CONTAINERS=$(docker ps -aq)  # Récupère les IDs des conteneurs arrêtés ou en cours
+          if [[ -n "$CONTAINERS" ]]; then  # Vérifie si la variable contient des IDs
+            echo "Stopping and removing containers: $CONTAINERS"
+            docker stop $CONTAINERS || true
+            docker rm $CONTAINERS || true
+          else
+            echo "No containers to remove."
+          fi
+        shell: bash
+
 
       - name: Remove Old images 
         run: |

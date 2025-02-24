@@ -6,9 +6,7 @@ on :
     workflow_dispatch:
 
     push:
-        branches:
-            main
-
+        
 
 env:
   REGISTRY: docker.io
@@ -30,7 +28,7 @@ jobs:
             "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
           tags: |
 
-            type=raw,value=latest  # un tag par default
+            # un tag par default -> type=raw,value=latest 
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
       
@@ -53,7 +51,7 @@ jobs:
           context: .
           push: true
           tags: |
-            "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+
             "${{ steps.meta.outputs.tags }}"
           
             labels: "${{ steps.meta.outputs.labels }}"
