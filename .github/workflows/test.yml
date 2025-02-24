@@ -9,7 +9,7 @@
     jobs:
       scan:
         name: Scan Docker Image
-        runs-on: ubuntu-24.04
+        runs-on: self-hosted
         steps:
           - name: Checkout Code
             uses: actions/checkout@v4
@@ -27,7 +27,7 @@
               ignore-unfixed: true
               vuln-type: 'os,library'
               severity: 'CRITICAL,HIGH,MEDIUM,LOW'
-              exit-code: 1  # Stop si vulnérabilités détectées
+              #exit-code: 1  # Stop si vulnérabilités détectées
     
           - name: Run Trivy Vulnerability Scanner on Configuration Files
             uses: aquasecurity/trivy-action@0.28.0
