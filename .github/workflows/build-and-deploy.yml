@@ -21,6 +21,14 @@ jobs:
       - name: Stop and Remove Old Container
         run: |
           docker compose down -v || true
+
+      - name: Remove Old images
+        run: |
+          docker image prune -a || true
+
+      - name: Remove Old Container
+        run: |
+          docker container prune || true
           
       - name: Run container
         run: |
