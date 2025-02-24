@@ -24,7 +24,7 @@ jobs:
 
       - name: Remove Old images 
         run: |
-          docker image prune -a -y || true
+          docker image prune -a -f || true
 
       - name: Remove Old Container
         run: |
