@@ -51,7 +51,7 @@
               path: config-scan-results-${{ github.sha }}.sarif
 
           - name: Upload Trivy Config Scan Results        #Activer l’annotation automatique dans GitHub pour les résultats SARIF          
-            uses: github/codeql-action/upload-sarif@v2
+            uses: github/codeql-action/upload-sarif@v3
             with:
               sarif_file: config-scan-results-${{ github.sha }}.sarif
             
