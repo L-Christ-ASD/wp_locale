@@ -354,7 +354,7 @@ networks:
 ```
 
 
-#### Lancement des Conteneurs:
+#### 3. Lancement des Conteneurs:
 
 Exécutez la commande suivante pour démarrer l’environnement :
 ```yml
@@ -379,7 +379,7 @@ SonarQube  ->  https://sonarqube.example.com
 **PS:**  
 Remplacer "example.com" par votre DNS et adapter le code en fonction!
 
-### Ajout de la CI/CD giyhub-action
+### 4. Ajout de la CI/CD giyhub-action
 
 Explication des étapes du workflow :
 
@@ -412,7 +412,15 @@ Explication des étapes du workflow :
 
 
 
+## 4.1 Difficultés Rencontrées et Solutions
 
+| **Problème**  | **Cause**  | **Solution**|
+|-----------|-----------|-----------|
+| Error: CodeQL Action major versions v1 and v2 have been deprecated. | version antérieure | mis à jour vers v3. |
+|  |  |  |
+| Resource not accessible by integration  |  l'upload du fichier SARIF échoue à cause d'un problème d'autorisations  | Ajout des permissions nécessaires dans le workflow, dans la section jobs.scan |
+|  |   |  |
+| Base de données non persistante après redémarrag  | Typo dans la configuration de volume pour MySQL  | Correction de typo /var/libn/mysql --> volume db_data:/var/lib/mysql |
 
 
 
