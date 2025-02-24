@@ -27,11 +27,10 @@ jobs:
           docker image prune -a -f || true
 
       - name: Remove Old Container
-        run: |
-          sudo         
-          docker stop f690f3ce6edc 1a2eee80c11f 5163effec2da 317436bbf86a d7d172b4a971 384c776e1d99 
-          docker rm f690f3ce6edc 1a2eee80c11f 5163effec2da 317436bbf86a d7d172b4a971 384c776e1d99
-          docker container prune -f || true   
+        run: |      
+          sudo docker stop f690f3ce6edc 1a2eee80c11f 5163effec2da 317436bbf86a d7d172b4a971 384c776e1d99 
+          sudo docker rm f690f3ce6edc 1a2eee80c11f 5163effec2da 317436bbf86a d7d172b4a971 384c776e1d99
+          sudo docker container prune -f || true   
           
       - name: Run container
         run: |
