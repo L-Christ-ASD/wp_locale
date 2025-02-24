@@ -28,7 +28,7 @@ jobs:
             "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
           tags: |
 
-            # un tag par default -> type=raw,value=latest 
+            type=raw,value=latest # un tag par default -> type=raw,value=latest 
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
       
@@ -52,7 +52,8 @@ jobs:
           push: true
           tags: |
 
-            "${{ steps.meta.outputs.tags }}"
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}    
+            ${{ steps.meta.outputs.tags }}
           
             labels: "${{ steps.meta.outputs.labels }}"
 
