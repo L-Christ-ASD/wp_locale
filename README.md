@@ -98,7 +98,7 @@ networks:
  docker ps
 ```
 
-![Mes contenneurs](PS.jpg)
+![Mes contenneurs](./pdf_files/PS.jpg)
 
 ## 3. Choix de Configuration
 
@@ -174,9 +174,9 @@ Connecté au réseau wp-network.
 
 **Résultat:**  
 
-![interface admin ](wpAdmin.png)  
+![interface admin ](./pdf_files/wpAdmin.png)  
 
-![Test de création de pages et d'ajout de médias dans Mon site](monsite.png)  
+![Test de création de pages et d'ajout de médias dans Mon site](./pdf_files/monsite.png)  
 
 #### 3.4. Résumé du Fonctionnement
 
@@ -200,7 +200,8 @@ Connecté au réseau wp-network.
 
 Ce déploiement permet une mise en place rapide et efficace d'un environnement complet pour héberger WordPress avec une base de données MySQL et une interface d'administration PhpMyAdmin, dans un environnement conteneurisé.
 
-## Perspectives d'améliorations possibles
+## Perspectives d'améliorations possibles  
+ 
 
 * Sécurisation en utilisant des mots de passe plus robustes et des fichiers .env.
 
@@ -215,10 +216,199 @@ Ce déploiement permet une mise en place rapide et efficace d'un environnement c
 * Utiliser Redis pour activer la mise en cache de WordPress (améliorer les performances).
 
 
+## 2ème Partie:
+
+#### Mise en place des amélioration proposées 
+
+**Prérequis**
+
+Avant de commencer, assurez-vous d’avoir installé :  
+
+**Docker**(version récente)  
+
+**Docker Compose**  
+
+Un **nom de domaine** ou un sous-domaine configuré avec les bons enregistrements DNS  
+
+
+### Structure du Projet
+
+![ Structure ](./pdf_files/project.png) 
 
 
 
 
+-> Utilisation des fichiers **.env** pour les "secrets"  ✅ 
+
+
+#### 1. Configuration de Traefik
+
+Traefik est un **reverse proxy** qui gère automatiquement le routage des requêtes et les certificats SSL.
+
+*Services* :
+
+- Ports exposés : 80 (HTTP), 443 (HTTPS), 8080 (Tableau de bord)  
+
+- Gestion automatique du SSL avec Let’s Encrypt  
+
+- Accès aux conteneurs Docker via docker.sock  
+
+```yml
+services:
+  reverse-proxy:
+    image: traefik:latest
+    container_name: traefik
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    command:
+      - --api.insecure=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.myresolver.acme.tlschallenge=true
+      - --certificatesresolvers.myresolver.acme.email=your-email@example.com
+      - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
+      - --providers.docker.defaultRule=Host(`{{ .Name }}.example.com`)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./letsencrypt:/letsencrypt
+    networks:
+      - traefik-network
+```
+
+#### 2. Configuration de SonarQube
+
+*Services *:
+
+- Analyse statique de code  
+
+- Base de données PostgreSQL dédiée  
+
+```yml
+services:
+  sonarqube:
+    image: sonarqube:lts
+    container_name: sonarqube
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:postgresql://sonar_db:5432/sonar
+      - SONARQUBE_JDBC_USERNAME=sonar
+      - SONARQUBE_JDBC_PASSWORD=sonar
+    networks:
+      - sonar_network
+      - traefik-network
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+    depends_on:
+      sonar_db:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarqube.rule=Host(`sonarqube.example.com`)
+      - "traefik.http.routers.sonarqube.entrypoints=websecure"
+      - "traefik.http.routers.sonarqube.tls.certresolver=myresolver"
+```
+
+**Base de données PostgreSQL pour SonarQube**
+
+```yml
+services:
+  sonar_db:
+    image: postgres:alpine
+    container_name: sonar_db
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonar
+    networks:
+      - sonar_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data:rw
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "sonar", "-h", "localhost"]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+      start_period: 30s
+```
+
+Gestion des Volumes et Réseaux
+
+```yml
+volumes:
+  postgres_data:
+  wordpress_data:
+  sonarqube_data:
+  db_data:
+```
+Gestion des Volumes et Réseaux
+
+```yml
+networks:
+  wp-network:
+    driver: bridge
+  traefik-network:
+    driver: bridge
+  sonar_network:
+    driver: bridge
+```
+
+
+#### Lancement des Conteneurs:
+
+Exécutez la commande suivante pour démarrer l’environnement :
+```yml
+  docker-compose up -d
+```
+
+Pour voir les logs en temps réel :
+```yml
+  docker-compose logs -f
+```
+
+
+**Accès aux Services**
+
+
+WordPress  ->  https://wordpress.example.com  
+
+phpMyAdmin ->  https://phpmyadmin.example.com  
+
+SonarQube  ->  https://sonarqube.example.com
+
+**PS:**  
+Remplacer "example.com" par votre DNS et adapter le code en fonction!
+
+### Ajout de la CI/CD giyhub-action
+
+Explication des étapes du workflow :
+
+1. Checkout Code : Cette étape récupère le code de votre dépôt GitHub avec actions/checkout.  
+
+2. Build the Docker Image : Cette étape crée une image Docker à partir du Dockerfile dans votre dépôt et l'étiquette avec le commit SHA de GitHub pour   assurer un versionnement unique de l'image.
+
+3. Run Trivy Vulnerability Scanner on Image : Cette étape utilise l'outil Trivy pour scanner l'image Docker construite pour détecter les vulnérabilités dans les dépendances de l'OS et des bibliothèques. Les résultats sont stockés dans un fichier .txt.
+
+4. Run Trivy Vulnerability Scanner on Configuration Files : Cette étape scanne les fichiers de configuration de Docker (comme le Dockerfile et le docker-compose.yml) pour les vulnérabilités et génère un rapport au format SARIF.
+
+5. Upload Trivy Image Scan Results : Cette étape télécharge les résultats du scan de l'image Docker dans les artefacts de GitHub pour pouvoir les consulter après l'exécution du workflow.
+
+6. Upload Trivy Config Scan Results : De même, cette étape télécharge les résultats du scan des fichiers de configuration dans les artefacts.
+
+7. Upload Trivy Config Scan Results (SARIF) : Cette étape est spécifiquement utilisée pour activer l'annotation automatique dans GitHub pour les résultats SARIF (le format standard pour les rapports de sécurité dans GitHub). Cela permet d’afficher les résultats du scan dans l'interface GitHub, avec des annotations dans les fichiers.
+
+
+**Remarque supplémentaire** :  
+
+- Si vous souhaitez stopper le workflow si Trivy détecte des vulnérabilités graves, vous pouvez décommenter la ligne suivante dans l'étape Run Trivy Vulnerability Scanner on Image :
+
+```yml
+# exit-code: 1  
+
+```
+-> Cela arrêtera l'exécution du workflow avec un code de sortie 1 si des vulnérabilités sont trouvées, vous permettant ainsi de bloquer le déploiement en cas de problème de sécurité.
+
+- Assurez-vous également que les secrets ou variables d'environnement nécessaires pour l'accès aux services et pour la construction de l'image Docker (comme les informations de registre Docker) sont correctement configurés dans les paramètres de votre dépôt.
 
 
 
