@@ -25,15 +25,9 @@ jobs:
 
       - name: Which groups ?
         run: groups
-
-      
+    
       - name: Take permissions to delete!
         run: sudo usermod -aG docker $USER
-
-
-      - name: become root
-        run: |
-          sudo -i
 
       - name: Remove Old Container
         run: |      
@@ -50,10 +44,6 @@ jobs:
       - name: Remove Old images 
         run: |
           docker image prune -a -f || true
-
-      - name: become student
-        run: |
-          exit
         
       - name: Run container
         run: |
