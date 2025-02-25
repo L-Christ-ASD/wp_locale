@@ -12,7 +12,7 @@ services:
       - --api.insecure=true # Active l'interface du tableau de bord sans authentification
       - --entrypoints.web.address=:80 # Définit un entrypoint HTTP sur le port 80
       - --entrypoints.websecure.address=:443
-      - --certificatesresolvers.myresolver.acme.tlschallenge=true
+      - --certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web
       - --certificatesresolvers.myresolver.acme.email=christ.lumu@oclock.school
       - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
       - --providers.docker.defaultRule=Host(`*.l-christ-asd-server.eddi.cloud`) # utilise le nom du service défini dans docker-compose.yml comme sous-domaine.
@@ -134,7 +134,7 @@ services:
       - "traefik.http.routers.sonarqube.rule=Host(`sonarqube.l-christ-asd-server.eddi.cloud`)"
       - "traefik.http.routers.sonarqube.entrypoints=websecure"
       - "traefik.http.routers.sonarqube.tls.certresolver=myresolver"
-      - "traefik.http.services.sonarqube.loadbalancer.server.port=9000"
+      - "traefik.http.services.sonarqube.loadbalancer.server.port=80"
 
 
 

@@ -14,7 +14,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Checkout Code
+      - name: Create letsencrypt directory
         run: mkdir -p /home/student/actions-runner-wpress/_work/wordPress/wordPress/letsencrypt/
 
       - name: Show containeur
@@ -26,16 +26,11 @@ jobs:
 
       - name: Remove Old Container
         run: |      
-          CONTAINERS=$(docker ps -aq)  # Récupère les IDs des conteneurs arrêtés ou en cours
-          if [[ -n "$CONTAINERS" ]]; then  # Vérifie si la variable contient des IDs
-            echo "Stopping and removing containers: $CONTAINERS"
-            docker stop $CONTAINERS || true
-            docker rm $CONTAINERS || true
-          else
-            echo "No containers to remove."
-          fi
-        shell: bash
-
+          docker stop $(docker ps -aq)
+          docker rm -f $(docker ps -aq)
+          docker system prune
+          docker system prune -a
+          docker volume rm $(docker volume ls -q)
 
       - name: Remove Old images 
         run: |
