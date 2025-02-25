@@ -25,4 +25,4 @@ sonar-scan:
 	-Dsonar.projectKey=${PROJECT_KEY}
 
 project:
-	@docker compose up -d
+	@docker compose up 
