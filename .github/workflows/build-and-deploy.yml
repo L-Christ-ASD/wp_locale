@@ -26,11 +26,15 @@ jobs:
 
       - name: Remove Old Container
         run: |      
-          docker stop $(docker ps -aq)
-          docker rm -f $(docker ps -aq)
-          docker system prune
-          docker system prune -a
-          docker volume rm $(docker volume ls -q)
+          docker ps -q | xargs -r docker stop
+          docker ps -aq | xargs -r docker rm -f
+          docker system prune -f
+          docker system prune -a -f
+          docker volume ls -q | xargs -r docker volume rmdocker ps -q | xargs -r docker stop
+          docker ps -aq | xargs -r docker rm -f
+          docker system prune -f
+          docker system prune -a -f
+          docker volume ls -q | xargs -r docker volume rm
 
       - name: Remove Old images 
         run: |
