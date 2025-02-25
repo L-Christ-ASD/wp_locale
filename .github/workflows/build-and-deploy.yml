@@ -20,6 +20,13 @@ jobs:
       - name: Show containeur
         run: docker ps -a || true
 
+      - name: Whoami ?
+        run: whoami
+
+      - name: Take permissions to delete!
+        run: sudo usermod -aG docker $USER
+
+
       - name: Stop and Remove Old Container
         run: |
           docker compose down -v || true
