@@ -9,7 +9,7 @@ services:
       - "443:443"  # Ajout pour le challenge TLS
       - "8080:8080" # Tableau de bord de Traefik
     command:
-      - --api.dashboard.insecure=true # Active l'interface du tableau de bord sans authentification
+      - --api.dashboard=true # Active l'interface du tableau de bord sans authentification
       - --entrypoints.web.address=:80 # Définit un entrypoint HTTP sur le port 80
       - --entrypoints.websecure.address=:443
       - --certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web
@@ -21,6 +21,11 @@ services:
       - ./letsencrypt:/letsencrypt
     networks:
     - traefik-network
+    labels:
+      - "traefik.http.routers.api.rule=Host(`traefik.l-christ-asd-server.eddi.cloud`)"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.users=user:password" # Remplacez par un utilisateur/mot de passe sécurisés
 
   wordpress:
     container_name: wordpress
