@@ -9,7 +9,7 @@ services:
       - "443:443"  # Ajout pour le challenge TLS
       - "8080:8080" # Tableau de bord de Traefik
     command:
-      - --api.insecure=true # Active l'interface du tableau de bord sans authentification
+      - --api.dashboard.insecure=true # Active l'interface du tableau de bord sans authentification
       - --entrypoints.web.address=:80 # Définit un entrypoint HTTP sur le port 80
       - --entrypoints.websecure.address=:443
       - --certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web
