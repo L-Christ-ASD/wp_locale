@@ -31,9 +31,9 @@ jobs:
         run: sudo usermod -aG docker $USER
 
 
-      - name: Stop and Remove Old Container
+      - name: become root
         run: |
-          docker compose down -v || true
+          sudo -i
 
       - name: Remove Old Container
         run: |      
@@ -50,6 +50,10 @@ jobs:
       - name: Remove Old images 
         run: |
           docker image prune -a -f || true
+
+      - name: become student
+        run: |
+          exit
         
       - name: Run container
         run: |
