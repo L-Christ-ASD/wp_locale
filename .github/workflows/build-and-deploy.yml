@@ -26,8 +26,9 @@ jobs:
       - name: Which groups ?
         run: groups
 
+      
       - name: Take permissions to delete!
-        run: sudo -s usermod -aG docker $USER
+        run: sudo usermod -aG docker $USER
 
 
       - name: Stop and Remove Old Container
