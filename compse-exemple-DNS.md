@@ -9,10 +9,13 @@ services:
       - "443:443"  # Ajout pour le challenge TLS
       - "8080:8080" # Tableau de bord de Traefik
     command:
-      - --api.insecure=true
-      - --providers.docker=true
-      - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443 # Entrypoint HTTPS activé
+      - --api.dashboard=true # Active l'interface du tableau de bord sans authentification
+      - --entrypoints.web.address=:80 # Définit un entrypoint HTTP sur le port 80
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web
+      - --certificatesresolvers.myresolver.acme.email=christ.lumu@oclock.school
+      - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
+      - --providers.docker.defaultRule=Host(`*.l-christ-asd-server.eddi.cloud`) # utilise le nom du service défini dans docker-compose.yml comme sous-domaine.
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock # Permet à Traefik d'accéder aux informations des conteneurs Docker
       - ./letsencrypt:/letsencrypt
@@ -21,17 +24,19 @@ services:
     
 
   wordpress:
-    image: wordpress:6.7
     container_name: wordpress
     restart: unless-stopped
 
+    build:
+      context: ./wordpress
+      dockerfile: Dockerfile
+    ports:
+      - "81:80"
     environment:
       WORDPRESS_DB_HOST: ${WP_DB_HOST}
       WORDPRESS_DB_USER: ${WP_DB_USER}
       WORDPRESS_DB_PASSWORD: ${WP_DB_PASSWORD}
       WORDPRESS_DB_NAME: ${WP_DB_NAME}
-    ports:
-      - "81:80"
 
     volumes:
       - wordpress_data:/var/www/html
@@ -41,9 +46,12 @@ services:
         condition: service_healthy
 
     labels:
-      - "traefik.http.routers.wordpress.rule=Host(`wordpress.localhost`)"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-      - "traefik.http.routers.wordpress.middlewares=redirect-to-https"
+      - "traefik.enable=true"
+      - "traefik.http.routers.wordpress.rule=Host(`wordpress.l-christ-asd-server.eddi.cloud`)"
+      - "traefik.http.routers.wordpress.entrypoints=websecure"
+      - "traefik.http.routers.wordpress.tls.certresolver=myresolver"
+      - "traefik.http.services.wordpress.loadbalancer.server.port=80"
+      - "traefik.http.routers.sonarqube.entrypoints=web"
     networks:
       - wp-network
       - traefik-network
@@ -79,6 +87,7 @@ services:
     build:
       context: ./phpmyadmin
       dockerfile: Dockerfile
+
     ports:
       - "82:80"
 
@@ -91,9 +100,12 @@ services:
         condition: service_healthy
 
     labels:
-      - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.localhost`)"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-      - "traefik.http.routers.phpmyadmin.middlewares=redirect-to-https"
+      - "traefik.enable=true"
+      - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.l-christ-asd-server.eddi.cloud`)"
+      - "traefik.http.routers.phpmyadmin.entrypoints=websecure"
+      - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
+      - "traefik.http.services.phpmyadmin.loadbalancer.server.port=80"
+      - "traefik.http.routers.sonarqube.entrypoints=web"
     networks:
       - wp-network
       - traefik-network
@@ -107,6 +119,7 @@ services:
       - SONARQUBE_JDBC_URL=jdbc:postgresql://sonar_db:5432/sonar
       - SONARQUBE_JDBC_USERNAME=sonar
       - SONARQUBE_JDBC_PASSWORD=sonar
+
     ports:
       - "9000:9000"
 
@@ -120,9 +133,12 @@ services:
         condition: service_healthy
 
     labels:
-      - "traefik.http.routers.sonarqube.rule=Host(`sonarqube.localhost`)"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-      - "traefik.http.routers.sonarqube.middlewares=redirect-to-https"
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarqube.entrypoints=web"
+      - "traefik.http.routers.sonarqube.rule=Host(`sonarqube.l-christ-asd-server.eddi.cloud`)"
+      - "traefik.http.routers.sonarqube.entrypoints=websecure"
+      - "traefik.http.routers.sonarqube.tls.certresolver=myresolver"
+      - "traefik.http.services.sonarqube.loadbalancer.server.port=9000"
       
     networks:
       - sonar_network

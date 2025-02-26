@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     name: Build and Deploy on Self-Hosted Runner
-    runs-on: self-hosted  # Utilise un runner auto-hébergé
+    runs-on: ubuntu-24.04  # Utilise un runner auto-hébergé
 
     steps:
       - name: Checkout Code
@@ -25,6 +25,9 @@ jobs:
 
       - name: Which groups ?
         run: groups
+
+      - name: vérifie with sonarqube
+        run: make sonar-scan
     
       - name: Take permissions to delete!
         run: sudo usermod -aG docker $USER

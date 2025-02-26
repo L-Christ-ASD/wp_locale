@@ -1,15 +1,6 @@
 ENV-FILE=.env
 
-include ./sonarqube/.env
-
-
-watch:
-	@echo "ENVIRONMENT=developpement" > ${ENV-FILE}
-	@docker compose up --watch
-
-run:
-	@echo "ENVIRONMENT=production" > ${ENV-FILE}
-	@docker compose up -d
+include ./.env
 
 sonarqube:
 	@ docker compose up sonarqube sonar_db
@@ -17,12 +8,14 @@ sonarqube:
 sonar-scan:
 	docker run \
     --rm \
-    --network=s13-challenge_sonar_network \
-    -e SONAR_HOST_URL="http://sonarqube:9000"  \
+    --network=1wordpress_deployment_sonar_network \
+    -e SONAR_HOST_URL="http://172.18.0.3:9000"  \ 
     -e SONAR_TOKEN="${SONAR_TOKEN}" \
-    -v "/workspaces/S13-Challenge:/usr/src" \
+    -v "/home/christ/1wordPress_deployment:/usr/src" \
     sonarsource/sonar-scanner-cli \
 	-Dsonar.projectKey=${PROJECT_KEY}
+
+	
 
 project:
 	@docker compose up 

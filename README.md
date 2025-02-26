@@ -256,25 +256,23 @@ Traefik est un **reverse proxy** qui gère automatiquement le routage des requê
 ```yml
 services:
   reverse-proxy:
-    image: traefik:latest
+    image: traefik:3.2
     container_name: traefik
+    restart: unless-stopped
     ports:
       - "80:80"
-      - "443:443"
-      - "8080:8080"
+      - "443:443"  # Ajout pour le challenge TLS
+      - "8080:8080" # Tableau de bord de Traefik
     command:
       - --api.insecure=true
+      - --providers.docker=true
       - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
-      - --certificatesresolvers.myresolver.acme.tlschallenge=true
-      - --certificatesresolvers.myresolver.acme.email=your-email@example.com
-      - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
-      - --providers.docker.defaultRule=Host(`{{ .Name }}.example.com`)
+      - --entrypoints.websecure.address=:443 # Entrypoint HTTPS activé
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock # Permet à Traefik d'accéder aux informations des conteneurs Docker
       - ./letsencrypt:/letsencrypt
     networks:
-      - traefik-network
+    - traefik-network
 ```
 
 #### 2. Configuration de SonarQube
@@ -286,28 +284,38 @@ services:
 - Base de données PostgreSQL dédiée  
 
 ```yml
-services:
-  sonarqube:
+sonarqube:
     image: sonarqube:lts
     container_name: sonarqube
+    restart: unless-stopped
+
     environment:
       - SONARQUBE_JDBC_URL=jdbc:postgresql://sonar_db:5432/sonar
       - SONARQUBE_JDBC_USERNAME=sonar
       - SONARQUBE_JDBC_PASSWORD=sonar
-    networks:
-      - sonar_network
-      - traefik-network
+    ports:
+      - "9000:9000"
+
     volumes:
       - sonarqube_data:/opt/sonarqube/data
+      #- sonarqube_extensions:/opt/sonarqube/extensions --> pas assez
+      #- sonarqube_logs:/opt/sonarqube/logs
+
     depends_on:
       sonar_db:
         condition: service_healthy
+
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.sonarqube.rule=Host(`sonarqube.example.com`)
-      - "traefik.http.routers.sonarqube.entrypoints=websecure"
-      - "traefik.http.routers.sonarqube.tls.certresolver=myresolver"
+      - "traefik.http.routers.sonarqube.rule=Host(`sonarqube.localhost`)"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.sonarqube.middlewares=redirect-to-https"
+      
+    networks:
+      - sonar_network
+      - traefik-network
+
 ```
+
 
 **Base de données PostgreSQL pour SonarQube**
 
@@ -331,8 +339,27 @@ services:
       retries: 5
       start_period: 30s
 ```
+#### Ajustement des autres services:
+Rajout des labes traefik
 
-Gestion des Volumes et Réseaux
+
+wordpress:
+```yml
+labels:
+      - "traefik.http.routers.wordpress.rule=Host(`wordpress.localhost`)"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.wordpress.middlewares=redirect-to-https"
+```
+phpmyadmin:
+```yml
+labels:
+      - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.localhost`)"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.phpmyadmin.middlewares=redirect-to-https"
+```
+
+
+Gestion des Volumes
 
 ```yml
 volumes:
@@ -341,7 +368,7 @@ volumes:
   sonarqube_data:
   db_data:
 ```
-Gestion des Volumes et Réseaux
+Gestion de Réseaux
 
 ```yml
 networks:
@@ -367,17 +394,24 @@ Pour voir les logs en temps réel :
 ```
 
 
-**Accès aux Services**
+**Accès aux Services**  
+
+ 1. Traefik-dashboard -> http://localhost:8080
+
+ 2. WordPress         ->  http://wordpress.localhost:81 
+
+ 3. phpMyAdmin        ->  http://localhost:82  
+
+ 4. SonarQube         ->  http://sonarqube.localhost:9000
 
 
-WordPress  ->  https://wordpress.example.com  
-
-phpMyAdmin ->  https://phpmyadmin.example.com  
-
-SonarQube  ->  https://sonarqube.example.com
 
 **PS:**  
-Remplacer "example.com" par votre DNS et adapter le code en fonction!
+Pour inspecter votre repo avec sonarqube, lancer la commande:
+```bash
+  make sonar-scan
+```
+
 
 ### 4. Ajout de la CI/CD giyhub-action
 
