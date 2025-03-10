@@ -1,0 +1,9 @@
+---
+- name: Déploiement de WordPress avec Docker et Traefik
+  hosts: all  # Applique à tous les hôtes définis dans inventory.ini
+  become: true  # Exécute avec les privilèges sudo
+
+  roles:
+    - role: docker   # Installation de Docker et Docker Compose
+    # - role: wordpress  # Déploiement de WordPress (à activer plus tard)
+    # - role: traefik  # Configuration du reverse proxy (à activer plus tard)

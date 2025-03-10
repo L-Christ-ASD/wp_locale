@@ -1,0 +1,48 @@
+---
+- name: Mettre à jour les paquets
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Installer les dépendances nécessaires
+  apt:
+    name: 
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+    state: present
+
+- name: Ajouter la clé GPG officielle de Docker
+  shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+
+- name: Ajouter le repository Docker
+  shell: add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+- name: Mettre à jour les paquets après ajout du repo Docker
+  apt:
+    update_cache: yes
+
+- name: Installer Docker et Docker Compose
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+    state: present
+
+- name: Vérifier que Docker est bien installé
+  command: docker --version
+  register: docker_version
+  changed_when: false
+
+- name: Afficher la version de Docker
+  debug:
+    msg: "Docker version installée : {{ docker_version.stdout }}"
+
+- name: Activer et démarrer Docker
+  systemd:
+    name: docker
+    enabled: yes
+    state: started
